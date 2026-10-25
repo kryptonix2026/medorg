@@ -46,21 +46,11 @@ fs.writeFileSync(schemaPath, schemaContent, "utf8");
 console.log(`[useDb] Set schema datasource provider to ${isPostgres ? "postgresql" : "sqlite"}`);
 
 try {
-  console.log("[useDb] Regenerating Prisma Client in root...");
+  console.log("[useDb] Regenerating Prisma Clients (root and server)...");
   execSync("npx prisma generate --schema=prisma/schema.prisma", {
     cwd: rootDir,
     stdio: "inherit",
   });
-
-  const serverDir = path.resolve(rootDir, "server");
-  if (fs.existsSync(serverDir)) {
-    console.log("[useDb] Regenerating Prisma Client in server...");
-    execSync("npx prisma generate --schema=../prisma/schema.prisma", {
-      cwd: serverDir,
-      stdio: "inherit",
-    });
-  }
-
   console.log(`[useDb] Successfully switched database provider to ${isPostgres ? "PostgreSQL" : "SQLite"}`);
 } catch (err) {
   console.error("[useDb] Failed to regenerate Prisma client:", err.message);

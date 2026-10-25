@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import AppHeader from "../components/AppHeader";
-import { checkHealth } from "../services/api";
+import { checkHealth, aiApi } from "../services/api";
 
 export default function Landing() {
   const [apiStatus, setApiStatus] = useState<"checking" | "ok" | "error">("checking");
@@ -13,9 +13,8 @@ export default function Landing() {
       setApiStatus(healthy ? "ok" : "error");
       if (healthy) {
         try {
-          const response = await fetch("/api/ai/status");
-          const data = await response.json();
-          setAiConfigured(data.configured);
+          const data = await aiApi.status();
+          setAiConfigured(!!data?.configured);
         } catch {
           // ignore
         }
@@ -60,7 +59,7 @@ export default function Landing() {
           <span className="text-secondary">
             {aiConfigured
               ? "AI summary ready"
-              : "AI not configured (set GROQ_API_KEY in root .env)"}
+              : "AI not configured (set GROQ_API_KEY)"}
           </span>
         </div>
       </div>

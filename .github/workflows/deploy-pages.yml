@@ -1,0 +1,51 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Cancel in-progress deployments
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          cancel_pending_runs: true
+
+      - name: Cancel previous workflow runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          cancel_pending_runs: true
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build client
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_BASE_PATH: ${{ secrets.VITE_BASE_PATH }}
+        run: |
+          npm run build --prefix client
+
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: client/dist
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

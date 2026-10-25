@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Enums (as strings in SQLite)
+// RecordType: "REPORT" | "PRESCRIPTION"
+// AccessStatus: "PENDING" | "APPROVED" | "DENIED" | "EXPIRED" | "REVOKED"
+// OTPPurpose: "PATIENT_REGISTRATION" | "DOCTOR_REGISTRATION" | "ACCESS_APPROVAL" | "PATIENT_LOGIN" | "DOCTOR_LOGIN"
+// NotificationType: "WELCOME" | "ACCESS_REQUESTED" | "ACCESS_APPROVED" | "ACCESS_DENIED" | "ACCESS_REVOKED" | "RECORD_UPLOADED" | "AI_SUMMARY_GENERATED"
+
+// User model (Patient)
+model User {
+  id                  String           @id @default(uuid())
+  medOrgId            String           @unique
+  name                String
+  dateOfBirth         String
+  email               String           @unique
+  nationalIdHash      String
+  nationalIdLast4     String
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  medicalRecords      MedicalRecord[]
+  accessRequests      AccessRequest[]  @relation("PatientAccess")
+}
+
+// Doctor model
+model Doctor {
+  id                  String           @id @default(uuid())
+  doctorId            String           @unique
+  name                String
+  email               String           @unique
+  medicalLicenseNumber String          @unique
+  hospitalName        String
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  medicalRecords      MedicalRecord[]
+  accessRequests      AccessRequest[]  @relation("DoctorAccess")
+}
+
+// MedicalRecord model
+model MedicalRecord {
+  id                  String           @id @default(uuid())
+  patientId           String
+  doctorId            String
+  recordType          String           // "REPORT" | "PRESCRIPTION"
+  title               String
+  description         String           @default("")
+  originalFileName    String
+  storedFileName      String
+  filePath            String
+  mimeType            String
+  fileSize            Int
+  uploadedAt          DateTime         @default(now())
+  patient             User             @relation(fields: [patientId], references: [id])
+  doctor              Doctor           @relation(fields: [doctorId], references: [id])
+
+  @@index([patientId, uploadedAt])
+  @@index([doctorId])
+}
+
+// AccessRequest model
+model AccessRequest {
+  id                  String           @id @default(uuid())
+  patientId           String
+  doctorId            String
+  status              String           @default("PENDING") // "PENDING" | "APPROVED" | "DENIED" | "EXPIRED" | "REVOKED"
+  requestedAt         DateTime         @default(now())
+  approvedAt          DateTime?
+  expiresAt           DateTime?
+  accessDuration      String           // "24h" | "3d" | "7d"
+  patient             User             @relation("PatientAccess", fields: [patientId], references: [id])
+  doctor              Doctor           @relation("DoctorAccess", fields: [doctorId], references: [id])
+
+  @@index([patientId, status])
+  @@index([doctorId, status])
+}
+
+// OtpSession model
+model OtpSession {
+  id                  String           @id @default(uuid())
+  email               String
+  purpose             String           // "PATIENT_REGISTRATION" | "DOCTOR_REGISTRATION" | "ACCESS_APPROVAL" | "PATIENT_LOGIN" | "DOCTOR_LOGIN"
+  otpHash             String
+  expiresAt           DateTime
+  attempts            Int              @default(0)
+  verified            Boolean          @default(false)
+  createdAt           DateTime         @default(now())
+}
+
+// Notification model
+model Notification {
+  id                  String           @id @default(uuid())
+  userType            String           // "PATIENT" | "DOCTOR"
+  userId              String
+  type                String           // "WELCOME" | "ACCESS_REQUESTED" | "ACCESS_APPROVED" | "ACCESS_DENIED" | "ACCESS_REVOKED" | "RECORD_UPLOADED"
+  title               String
+  message             String
+  read                Boolean          @default(false)
+  createdAt           DateTime         @default(now())
+}
+
+// AuditLog model
+model AuditLog {
+  id                  String           @id @default(uuid())
+  actorType           String           // "PATIENT" | "DOCTOR" | "SYSTEM"
+  actorId             String
+  action              String
+  targetType          String           // "USER" | "MEDICAL_RECORD" | "ACCESS_REQUEST" | "SESSION" | "AI_SUMMARY"
+  targetId            String?
+  metadata            String           // JSON string
+  createdAt           DateTime         @default(now())
+}
+
+// Session model
+model Session {
+  id                  String           @id @default(uuid())
+  tokenHash           String           @unique
+  userType            String           // "PATIENT" | "DOCTOR"
+  userId              String
+  expiresAt           DateTime
+  createdAt           DateTime         @default(now())
+}

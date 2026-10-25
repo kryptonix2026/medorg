@@ -1,0 +1,58 @@
+{
+  "name": "medorg-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false --exclude \"node_modules/**\" --exclude \"data/**\" --exclude \"../data/**\" --exclude \"**/*.db*\" src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node --import tsx src/index.ts",
+    "db:generate": "dotenv -e ../.env -o -- prisma generate",
+    "db:push": "dotenv -e ../.env -o -- prisma db push --accept-data-loss",
+    "db:studio": "dotenv -e ../.env -o -- prisma studio",
+    "typecheck": "tsc --noEmit"
+  },
+  "prisma": {
+    "schema": "../prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1156.0",
+    "@aws-sdk/s3-request-presigner": "^3.1156.0",
+    "@napi-rs/canvas": "^1.0.13",
+    "@prisma/client": "6.2.1",
+    "@types/pdf-parse": "^1.1.5",
+    "cookie-parser": "1.4.7",
+    "cors": "2.8.5",
+    "dotenv": "16.4.7",
+    "express": "5.0.1",
+    "express-rate-limit": "7.5.0",
+    "helmet": "8.0.0",
+    "multer": "1.4.5-lts.1",
+    "nodemailer": "6.9.16",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^6.4.299",
+    "tesseract.js": "^7.0.0",
+    "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "1.4.8",
+    "@types/cors": "2.8.17",
+    "@types/express": "5.0.0",
+    "@types/multer": "1.4.12",
+    "@types/node": "22.10.5",
+    "@types/nodemailer": "6.4.17",
+    "dotenv-cli": "^11.0.0",
+    "prisma": "6.2.1",
+    "tsx": "4.19.2",
+    "typescript": "5.7.3"
+  },
+  "allowScripts": {
+    "@prisma/client": true,
+    "@prisma/engines": true,
+    "esbuild": true,
+    "prisma": true,
+    "tesseract.js": true,
+    "canvas": false
+  }
+}

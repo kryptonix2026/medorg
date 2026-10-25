@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment files
+.env*
+!.env.example
+.env.neon.local
+.env.backup.local
+
+# Build output
+dist/
+/dist
+client/dist/
+server/dist/
+
+# Neon CLI
+.neon
+.neon/
+skills-lock.json
+.agents/
+
+# Local databases & uploads
+data/
+prisma/data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Backups & scratch
+client_backup/
+*.log
+scratch/

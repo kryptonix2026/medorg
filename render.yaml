@@ -1,0 +1,71 @@
+services:
+  - type: web
+    name: medorg-backend
+    env: node
+    plan: free
+    buildCommand: npm ci && npm run db:use:postgres && npm run build --prefix server
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_MODE
+        value: hosted
+      - key: STORAGE_DRIVER
+        value: s3
+      - key: S3_BUCKET_NAME
+        value: records
+      - key: PORT
+        value: 5000
+      - key: CLIENT_URL
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_ENDPOINT_URL_S3
+        sync: false
+      - key: AWS_REGION
+        value: us-east-2
+      - key: NEON_BRANCH
+        value: production
+      - key: ALLOW_PRODUCTION_RESET
+        value: "false"
+      - key: EMAIL_TRANSPORT
+        value: api
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_FROM_EMAIL
+        sync: false
+      - key: BREVO_FROM_NAME
+        value: MedOrg
+      - key: BREVO_SMTP_HOST
+        value: smtp-relay.brevo.com
+      - key: BREVO_SMTP_PORT
+        value: "587"
+      - key: BREVO_SMTP_USER
+        sync: false
+      - key: BREVO_SMTP_PASSWORD
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+      - key: MAX_FILE_SIZE_MB
+        value: "3"
+      - key: SESSION_DAYS
+        value: "7"
+      - key: ENABLE_DB_VIEWER
+        value: "false"
+      - key: ALLOW_DB_RESET
+        value: "false"
+      - key: OTP_DEV_LOG
+        value: "false"

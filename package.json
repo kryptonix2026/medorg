@@ -1,0 +1,48 @@
+{
+  "name": "medorg",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MedOrg - Your Medical Records. One Secure Place.",
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "setup": "npm run install:all && node --import tsx scripts/setup.ts",
+    "dev": "concurrently -n server,client -c blue,green \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix server && npm run build --prefix client",
+    "start": "npm run start --prefix server",
+    "db:use:sqlite": "node --import tsx scripts/useDb.ts sqlite",
+    "db:use:postgres": "node --import tsx scripts/useDb.ts postgres",
+    "db:generate": "dotenv -e .env -o -- prisma generate --schema=prisma/schema.prisma",
+    "db:push": "dotenv -e .env -o -- prisma db push --schema=prisma/schema.prisma --accept-data-loss",
+    "db:seed": "node --import tsx scripts/seed.ts",
+    "db:reset": "node --import tsx scripts/reset.ts",
+    "db:studio": "dotenv -e .env -o -- prisma studio --schema=prisma/schema.prisma",
+    "ai:test": "node --import tsx scripts/aiTest.ts",
+    "test:e2e": "node --import tsx scripts/testE2e.ts",
+    "test:live": "node --import tsx scripts/testLive.ts",
+    "typecheck": "npm run typecheck --prefix server && npm run typecheck --prefix client"
+  },
+  "devDependencies": {
+    "@neon/config": "^1.9.4",
+    "concurrently": "9.0.1",
+    "dotenv-cli": "^11.0.0",
+    "prisma": "^6.2.1",
+    "tsx": "4.19.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1156.0",
+    "@aws-sdk/s3-request-presigner": "^3.1156.0",
+    "@prisma/client": "^6.2.1",
+    "dotenv": "^16.4.7",
+    "pdf-lib": "^1.17.1"
+  },
+  "allowScripts": {
+    "@prisma/client": true,
+    "@prisma/engines": true,
+    "esbuild": true,
+    "prisma": true,
+    "tesseract.js": true,
+    "canvas": false
+  }
+}

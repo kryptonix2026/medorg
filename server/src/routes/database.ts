@@ -98,7 +98,7 @@ router.get("/summary", async (req, res) => {
     });
 
     // Mask sensitive data
-    const maskedPatients = patients.map(p => ({
+    const maskedPatients = patients.map((p: any) => ({
       ...p,
       medOrgId: p.medOrgId,
       name: p.name,
@@ -106,7 +106,7 @@ router.get("/summary", async (req, res) => {
       nationalIdLast4: p.nationalIdLast4,
     }));
 
-    const maskedDoctors = doctors.map(d => ({
+    const maskedDoctors = doctors.map((d: any) => ({
       ...d,
       doctorId: d.doctorId,
       name: d.name,
@@ -115,12 +115,12 @@ router.get("/summary", async (req, res) => {
       hospitalName: d.hospitalName,
     }));
 
-    const maskedRecords = records.map(r => ({
+    const maskedRecords = records.map((r: any) => ({
       ...r,
       title: r.title,
     }));
 
-    const maskedAccessRequests = accessRequests.map(ar => ({
+    const maskedAccessRequests = accessRequests.map((ar: any) => ({
       ...ar,
       patient: ar.patient ? {
         ...ar.patient,
@@ -134,7 +134,7 @@ router.get("/summary", async (req, res) => {
       } : null,
     }));
 
-    const maskedSessions = sessions.map(s => ({
+    const maskedSessions = sessions.map((s: any) => ({
       ...s,
       // Don't show token hash, just user type and expiry
     }));

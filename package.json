@@ -11,8 +11,8 @@
     "dev:client": "npm run dev --prefix client",
     "build": "npm run build --prefix server && npm run build --prefix client",
     "start": "npm run start --prefix server",
-    "db:use:sqlite": "node --import tsx scripts/useDb.ts sqlite",
-    "db:use:postgres": "node --import tsx scripts/useDb.ts postgres",
+    "db:use:sqlite": "node scripts/useDb.mjs sqlite",
+    "db:use:postgres": "node scripts/useDb.mjs postgres",
     "db:generate": "dotenv -e .env -o -- prisma generate --schema=prisma/schema.prisma",
     "db:push": "dotenv -e .env -o -- prisma db push --schema=prisma/schema.prisma --accept-data-loss",
     "db:seed": "node --import tsx scripts/seed.ts",
@@ -26,16 +26,16 @@
   "devDependencies": {
     "@neon/config": "^1.9.4",
     "concurrently": "9.0.1",
-    "dotenv-cli": "^11.0.0",
-    "prisma": "^6.2.1",
-    "tsx": "4.19.2"
+    "dotenv-cli": "^11.0.0"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1156.0",
     "@aws-sdk/s3-request-presigner": "^3.1156.0",
     "@prisma/client": "^6.2.1",
     "dotenv": "^16.4.7",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "prisma": "^6.2.1",
+    "tsx": "4.19.2"
   },
   "allowScripts": {
     "@prisma/client": true,

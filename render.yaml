@@ -3,7 +3,7 @@ services:
     name: medorg-backend
     env: node
     plan: free
-    buildCommand: npm ci && npm run db:use:postgres && npm run build --prefix server
+    buildCommand: npm ci --include=dev && npm ci --prefix server --include=dev && npm run db:use:postgres && npm run build --prefix server
     startCommand: npm run start
     healthCheckPath: /api/health
     envVars:

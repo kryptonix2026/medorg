@@ -9,7 +9,7 @@ export default defineConfig(() => {
   const rootEnvPath = path.resolve(rootDir, ".env");
 
   let apiPort = "5000";
-  let viteBasePath = "/";
+  let viteBasePath = process.env.VITE_BASE_PATH || "/";
 
   if (fs.existsSync(rootEnvPath)) {
     const content = fs.readFileSync(rootEnvPath, "utf8");
@@ -18,7 +18,7 @@ export default defineConfig(() => {
       apiPort = portMatch[1];
     }
     const baseMatch = content.match(/^VITE_BASE_PATH\s*=\s*["']?([^"'\r\n]+)["']?/m);
-    if (baseMatch) {
+    if (baseMatch && !process.env.VITE_BASE_PATH) {
       viteBasePath = baseMatch[1].trim();
     }
   }
